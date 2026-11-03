@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini-Projeto Demo — Biblioteca FormFlexReact</title>
+  <!-- React 18 + Babel via CDN para rodar direto no navegador dando 2 cliques no arquivo -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --danger: #f87171;
+      --success: #34d399;
+      --badge: #1d4ed8;
+    }
+    * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      padding: 28px 16px;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    header {
+      background: linear-gradient(135deg, #1e3a8a, #0f172a);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 26px;
+      margin-bottom: 22px;
+    }
+    header h1 { margin: 0 0 8px 0; font-size: 1.55rem; }
+    header p { margin: 0; color: #cbd5e1; font-size: 0.95rem; line-height: 1.45; }
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #0f172a;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      border-color: #60a5fa;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 20px;
+    }
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+    }
+    .card h2 { margin-top: 0; font-size: 1.2rem; }
+    .pattern-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+    .tag {
+      font-size: 0.75rem;
+      background: rgba(59, 130, 246, 0.18);
+      color: #93c5fd;
+      border: 1px solid rgba(96, 165, 250, 0.35);
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+    .field-group, .flexform-field {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-size: 0.86rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #e2e8f0;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #0f172a;
+      color: var(--text);
+      font-size: 0.94rem;
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+    }
+    input[aria-invalid="true"] {
+      border-color: var(--danger);
+    }
+    .flexform-error, .erro {
+      display: block;
+      color: var(--danger);
+      font-size: 0.8rem;
+      margin-top: 5px;
+    }
+    .validating-msg {
+      display: block;
+      color: #fbbf24;
+      font-size: 0.8rem;
+      margin-top: 5px;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    button.btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    button.btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    button.btn-primary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    button.btn-secondary {
+      background: #334155;
+      color: #f1f5f9;
+    }
+    button.btn-secondary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    pre {
+      background: #090d16;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 0.8rem;
+      overflow-x: auto;
+      color: #a7f3d0;
+      margin: 0;
+    }
+    .success-box {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 10px;
+      background: rgba(16, 185, 129, 0.14);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      color: #d1fae5;
+      font-size: 0.88rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useCallback } = React;
+
+    // ============================================================================
+    // 1. NÚCLEO DA BIBLIOTECA FORMFLEXREACT (Espelho exato da pasta src/)
+    // ============================================================================
+
+    // [Padrão Strategy] - src/validation/validators.ts
+    const validators = {
+      obrigatorio: (mensagem = 'Este campo é obrigatório.') => (value) => {
+        if (value === null || value === undefined) return mensagem;
+        if (typeof value === 'string' && value.trim() === '') return mensagem;
+        return null;
+      },
+      email: (mensagem = 'Digite um endereço de e-mail válido.') => {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return (value) => {
+          if (!value) return null;
+          return regex.test(String(value).trim()) ? null : mensagem;
+        };
+      },
+      minLength: (min, mensagem = `Deve ter pelo menos ${min} caracteres.`) => (value) => {
+        if (!value) return null;
+        return String(value).length >= min ? null : mensagem;
+      },
+      igualA: (campoAlvo, mensagem = `Deve ser igual ao campo "${campoAlvo}".`) => (value, formValues) => {
+        if (!formValues) return null;
+        return value === formValues[campoAlvo] ? null : mensagem;
+      },
+    };
+
+    // [Padrão Decorator] - src/validation/validators.ts
+    const validatorDecorators = {
+      comMensagem: (validator, novaMensagem) => (value, formValues) =>
+        validator(value, formValues) !== null ? novaMensagem : null,
+      quando: (condicao, validator) => (value, formValues) =>
+        !condicao(formValues) ? null : validator(value, formValues),
+      comSanitizacao: (sanitizador, validator) => (value, formValues) =>
+        validator(sanitizador(value), formValues),
+    };
+
+    // [Padrões Chain of Responsibility + Observer + Memento] - src/core/FormController.ts
+    class FormController {
+      constructor(configs) {
+        this.configs = configs;
+        this.fields = {};
+        this.isSubmitting = false;
+        this.listeners = new Set();
+
+        for (const key of Object.keys(configs)) {
+          this.fields[key] = {
+            value: configs[key].initialValue,
+            error: null,
+            touched: false,
+            dirty: false,
+            validating: false,
+          };
+        }
+        this.initialMemento = this.criarSnapshot();
+      }
+
+      getState() {
+        const values = {};
+        const errors = {};
+        const fieldsCopy = {};
+        let isValid = true;
+        let isDirty = false;
+
+        for (const key of Object.keys(this.fields)) {
+          const f = this.fields[key];
+          fieldsCopy[key] = { ...f };
+          values[key] = f.value;
+          errors[key] = f.error;
+          if (f.error !== null || f.validating) isValid = false;
+          if (f.dirty) isDirty = true;
+        }
+        return { fields: fieldsCopy, values, errors, isValid, isDirty, isSubmitting: this.isSubmitting };
+      }
+
+      setValue(name, value) {
+        const current = this.fields[name];
+        if (!current) return;
+        this.fields[name] = {
+          ...current,
+          value,
+          dirty: value !== this.configs[name].initialValue,
+        };
+        this.executarCadeiaValidacao(name);
+        this.notificar();
+
+        if (this.fields[name].error === null && this.configs[name].asyncValidators?.length > 0) {
+          this.validarCampoAsync(name);
+        }
+      }
+
+      setTouched(name, touched = true) {
+        if (!this.fields[name]) return;
+        this.fields[name] = { ...this.fields[name], touched };
+        this.executarCadeiaValidacao(name);
+        this.notificar();
+      }
+
+      // Chain of Responsibility (Síncrono)
+      executarCadeiaValidacao(name) {
+        const config = this.configs[name];
+        const values = this.getState().values;
+        let errorMessage = null;
+        for (const validator of config.validators) {
+          const erro = validator(this.fields[name].value, values);
+          if (erro !== null) {
+            errorMessage = erro;
+            break; // Short-circuit no primeiro erro!
+          }
+        }
+        this.fields[name] = { ...this.fields[name], error: errorMessage };
+        return errorMessage;
+      }
+
+      // Chain of Responsibility (Assíncrono)
+      async validarCampoAsync(name) {
+        const sincErro = this.executarCadeiaValidacao(name);
+        if (sincErro !== null) {
+          this.notificar();
+          return sincErro;
+        }
+        const asyncList = this.configs[name].asyncValidators || [];
+        if (asyncList.length === 0) return null;
+
+        this.fields[name] = { ...this.fields[name], validating: true };
+        this.notificar();
+
+        const valorTestado = this.fields[name].value;
+        const values = this.getState().values;
+        let asyncError = null;
+        for (const asyncValidator of asyncList) {
+          const erro = await asyncValidator(valorTestado, values);
+          if (erro !== null) {
+            asyncError = erro;
+            break;
+          }
+        }
+        if (this.fields[name].value === valorTestado) {
+          this.fields[name] = { ...this.fields[name], error: asyncError, validating: false };
+          this.notificar();
+        }
+        return asyncError;
+      }
+
+      async validarTudoAsync() {
+        let valido = true;
+        for (const key of Object.keys(this.fields)) {
+          this.fields[key] = { ...this.fields[key], touched: true };
+          if (this.executarCadeiaValidacao(key) !== null) valido = false;
+        }
+        this.notificar();
+        if (!valido) return false;
+
+        const resultados = await Promise.all(
+          Object.keys(this.fields).map((k) => this.validarCampoAsync(k))
+        );
+        return resultados.every((r) => r === null);
+      }
+
+      setSubmitting(submitting) {
+        this.isSubmitting = submitting;
+        this.notificar();
+      }
+
+      // Observer (Pub/Sub)
+      quandoMudar(listener) {
+        this.listeners.add(listener);
+        return () => this.listeners.delete(listener);
+      }
+
+      notificar() {
+        const snap = this.getState();
+        this.listeners.forEach((l) => l(snap));
+      }
+
+      // Memento
+      criarSnapshot() {
+        return Object.freeze({ timestamp: new Date().toLocaleTimeString(), stateSnapshot: this.getState() });
+      }
+
+      restaurarSnapshot(memento) {
+        const { fields } = memento.stateSnapshot;
+        for (const k of Object.keys(fields)) {
+          if (this.fields[k]) this.fields[k] = { ...fields[k] };
+        }
+        this.isSubmitting = false;
+        this.notificar();
+      }
+
+      resetar() {
+        this.restaurarSnapshot(this.initialMemento);
+      }
+    }
+
+    // [Padrão Builder + Factory Method] - src/builders/FormBuilder.ts
+    class FormBuilder {
+      constructor() {
+        this.configs = {};
+        this.campoAtual = null;
+      }
+      campo(nome, valorInicial = '') {
+        this.campoAtual = nome;
+        this.configs[nome] = { initialValue: valorInicial, validators: [], asyncValidators: [] };
+        return this;
+      }
+      obrigatorio(msg) { return this.validar(validators.obrigatorio(msg)); }
+      email(msg) { return this.validar(validators.email(msg)); }
+      minLength(min, msg) { return this.validar(validators.minLength(min, msg)); }
+      igualA(alvo, msg) { return this.validar(validators.igualA(alvo, msg)); }
+      validar(fn) {
+        this.configs[this.campoAtual].validators.push(fn);
+        return this;
+      }
+      validarAsync(fn) {
+        this.configs[this.campoAtual].asyncValidators.push(fn);
+        return this;
+      }
+      construir() {
+        return new FormController(this.configs);
+      }
+    }
+
+    const criarForm = () => new FormBuilder();
+
+    // [Padrão Factory Method com Registry] - src/adapters/useFlexForm.ts
+    class FieldComponentFactory {
+      static registry = new Map();
+      static registrarComponente(tipo, renderer) {
+        FieldComponentFactory.registry.set(tipo, renderer);
+      }
+      static criarComponente(tipo, props) {
+        const renderer = FieldComponentFactory.registry.get(tipo) || FieldComponentFactory.registry.get('text');
+        return renderer({ ...props, type: tipo });
+      }
+    }
+
+    FieldComponentFactory.registrarComponente('text', ({ name, value, onChange, onBlur, label, placeholder, error, touched, type = 'text' }) => (
+      <div className="flexform-field">
+        {label && <label htmlFor={name}>{label}</label>}
+        <input id={name} name={name} type={type} value={value ?? ''} placeholder={placeholder} onChange={onChange} onBlur={onBlur} aria-invalid={Boolean(touched && error)} />
+        {touched && error && <span className="flexform-error">{error}</span>}
+      </div>
+    ));
+    FieldComponentFactory.registrarComponente('email', (props) => FieldComponentFactory.criarComponente('text', { ...props, type: 'email' }));
+
+    // [Padrão Adapter] - src/adapters/useFlexForm.ts
+    function useFlexForm(controller) {
+      const [state, setState] = useState(() => controller.getState());
+
+      useEffect(() => controller.quandoMudar((novo) => setState(novo)), [controller]);
+
+      const register = useCallback((name) => ({
+        name,
+        value: state.fields[name]?.value ?? '',
+        onChange: (e) => {
+          const val = e && e.target !== undefined ? e.target.value : e;
+          controller.setValue(name, val);
+        },
+        onBlur: () => controller.setTouched(name, true),
+      }), [controller, state.fields]);
+
+      const handleSubmit = useCallback((onValid) => async (e) => {
+        if (e?.preventDefault) e.preventDefault();
+        controller.setSubmitting(true);
+        try {
+          const ok = await controller.validarTudoAsync();
+          if (ok) await onValid(controller.getState().values);
+        } finally {
+          controller.setSubmitting(false);
+        }
+      }, [controller]);
+
+      const renderField = useCallback((name, options = {}) => {
+        const reg = register(name);
+        const f = state.fields[name];
+        return FieldComponentFactory.criarComponente(options.type || 'text', {
+          ...reg,
+          label: options.label,
+          placeholder: options.placeholder,
+          error: f?.error,
+          touched: f?.touched,
+        });
+      }, [register, state.fields]);
+
+      return {
+        ...state,
+        register,
+        handleSubmit,
+        renderField,
+        reset: () => controller.resetar(),
+        criarSnapshot: () => controller.criarSnapshot(),
+        restaurarSnapshot: (m) => controller.restaurarSnapshot(m),
+      };
+    }
+
+    // ============================================================================
+    // 2. MINI-PROJETO DO CLIENTE CONSUMINDO E ESTENDENDO A BIBLIOTECA
+    // ============================================================================
+
+    // --- Caso 1: Formulário Padrão (Out-of-the-Box) ---
+    const formPadrao = criarForm()
+      .campo('nome', '')
+        .obrigatorio('O nome completo é obrigatório.')
+        .minLength(3, 'O nome precisa ter pelo menos 3 caracteres.')
+      .campo('email', '')
+        .obrigatorio('O e-mail é obrigatório.')
+        .email('Digite um e-mail válido (ex: voce@dominio.com).')
+      .campo('senha', '')
+        .obrigatorio('A senha é obrigatória.')
+        .minLength(8, 'A senha deve possuir no mínimo 8 caracteres.')
+      .campo('confirmarSenha', '')
+        .obrigatorio('Confirme a senha.')
+        .igualA('senha', 'As senhas digitadas não conferem.')
+      .construir();
+
+    function AbaPadrao() {
+      const form = useFlexForm(formPadrao);
+      const [sucesso, setSucesso] = useState(null);
+
+      return (
+        <div className="grid">
+          <div className="card">
+            <h2>1. Caso de Uso Padrão (Out-of-the-Box)</h2>
+            <div className="pattern-tags">
+              <span className="tag">Builder (criarForm)</span>
+              <span className="tag">Strategy (obrigatorio, email, minLength, igualA)</span>
+              <span className="tag">Chain of Responsibility</span>
+              <span className="tag">Adapter (useFlexForm)</span>
+            </div>
+
+            <form onSubmit={form.handleSubmit((dados) => setSucesso(dados))}>
+              <div className="field-group">
+                <label>Nome Completo</label>
+                <input {...form.register('nome')} placeholder="Ex.: Arthur Oliveira" />
+                {form.fields.nome.touched && form.errors.nome && <span className="erro">{form.errors.nome}</span>}
+              </div>
+
+              <div className="field-group">
+                <label>E-mail</label>
+                <input {...form.register('email')} placeholder="arthur@universidade.edu.br" />
+                {form.fields.email.touched && form.errors.email && <span className="erro">{form.errors.email}</span>}
+              </div>
+
+              <div className="field-group">
+                <label>Senha</label>
+                <input type="password" {...form.register('senha')} placeholder="Mínimo 8 caracteres" />
+                {form.fields.senha.touched && form.errors.senha && <span className="erro">{form.errors.senha}</span>}
+              </div>
+
+              <div className="field-group">
+                <label>Confirmar Senha</label>
+                <input type="password" {...form.register('confirmarSenha')} placeholder="Repita sua senha" />
+                {form.fields.confirmarSenha.touched && form.errors.confirmarSenha && <span className="erro">{form.errors.confirmarSenha}</span>}
+              </div>
+
+              <div className="btn-row">
+                <button type="submit" className="btn btn-primary">Criar Conta</button>
+                <button type="button" className="btn btn-secondary" onClick={() => { form.reset(); setSucesso(null); }}>
+                  Limpar (Memento Reset)
+                </button>
+              </div>
+            </form>
+
+            {sucesso && (
+              <div className="success-box">
+                ✅ <strong>Formulário enviado com sucesso!</strong> Dados validados: <code>{JSON.stringify(sucesso)}</code>
+              </div>
+            )}
+          </div>
+
+          <div className="card">
+            <h2>Estado Reativo em Tempo Real (Observer)</h2>
+            <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginTop: 0 }}>
+              O <code>FormController</code> notifica o React via <code>quandoMudar()</code> a cada tecla digitada:
+            </p>
+            <pre>{JSON.stringify({
+              isValid: form.isValid,
+              isDirty: form.isDirty,
+              values: form.values,
+              errors: form.errors,
+            }, null, 2)}</pre>
+          </div>
+        </div>
+      );
+    }
+
+    // --- Caso 2: Extensão da Biblioteca pelo Desenvolvedor Cliente (OCP) ---
+
+    // Extensão 1: Novos componentes visuais ('cpf-mask' e 'moeda-brl') registrados na Factory
+    FieldComponentFactory.registrarComponente('cpf-mask', ({ name, value, onChange, onBlur, label, error, touched }) => {
+      const mascarar = (v) =>
+        String(v || '')
+          .replace(/\D/g, '')
+          .slice(0, 11)
+          .replace(/(\d{3})(\d)/, '$1.$2')
+          .replace(/(\d{3})(\d)/, '$1.$2')
+          .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+
+      return (
+        <div className="flexform-field">
+          <label htmlFor={name}>{label}</label>
+          <input
+            id={name}
+            value={value ?? ''}
+            placeholder="000.000.000-00"
+            onChange={(e) => onChange(mascarar(e.target.value))}
+            onBlur={onBlur}
+            aria-invalid={Boolean(touched && error)}
+          />
+          {touched && error && <span className="flexform-error">{error}</span>}
+        </div>
+      );
+    });
+
+    FieldComponentFactory.registrarComponente('moeda-brl', ({ name, value, onChange, onBlur, label, error, touched }) => (
+      <div className="flexform-field">
+        <label htmlFor={name}>{label}</label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontWeight: 'bold', color: '#60a5fa' }}>R$</span>
+          <input
+            id={name}
+            type="number"
+            step="0.01"
+            min="1"
+            value={value ?? ''}
+            placeholder="0.00"
+            onChange={onChange}
+            onBlur={onBlur}
+            aria-invalid={Boolean(touched && error)}
+          />
+        </div>
+        {touched && error && <span className="flexform-error">{error}</span>}
+      </div>
+    ));
+
+    // Extensão 2: Regra síncrona customizada de CPF
+    const validarCPF = (valor) => {
+      const limpo = String(valor || '').replace(/\D/g, '');
+      if (limpo.length !== 11) return 'CPF inválido: digite os 11 números.';
+      return null;
+    };
+
+    // Extensão 3: Decorator condicional + sanitização para CNPJ
+    const validarCNPJQuandoPJ = validatorDecorators.quando(
+      (vals) => vals?.tipoPessoa === 'PJ',
+      validatorDecorators.comSanitizacao(
+        (v) => String(v || '').replace(/\D/g, ''),
+        validators.minLength(14, 'CNPJ obrigatório para PJ (mínimo 14 dígitos).')
+      )
+    );
+
+    // Extensão 4: Regra Assíncrona (simulando validação de cupom em API)
+    const validarCupomAPI = async (cupom) => {
+      const cod = String(cupom || '').trim().toUpperCase();
+      if (!cod) return null;
+      await new Promise((r) => setTimeout(r, 650));
+      const validos = ['DESCONTO10', 'BEMVINDO', 'DESIGNPATTERNS'];
+      return validos.includes(cod) ? null : 'Cupom inválido na API! Use: DESCONTO10 ou DESIGNPATTERNS';
+    };
+
+    const formEstendido = criarForm()
+      .campo('nomeCliente', '')
+        .obrigatorio('Informe o nome do cliente.')
+      .campo('cpf', '')
+        .obrigatorio('O CPF é obrigatório.')
+        .validar(validarCPF)
+      .campo('tipoPessoa', 'PF')
+        .obrigatorio()
+      .campo('cnpj', '')
+        .validar(validarCNPJQuandoPJ)
+      .campo('valorDoacao', '50.00')
+        .obrigatorio('Informe o valor do pagamento.')
+      .campo('cupom', '')
+        .validarAsync(validarCupomAPI)
+      .construir();
+
+    function AbaEstendida() {
+      const form = useFlexForm(formEstendido);
+      const [checkpoint, setCheckpoint] = useState(null);
+      const [sucesso, setSucesso] = useState(null);
+
+      return (
+        <div className="grid">
+          <div className="card">
+            <h2>2. Caso Estendido pelo Cliente (Open/Closed Principle)</h2>
+            <div className="pattern-tags">
+              <span className="tag">Custom Strategy (.validar)</span>
+              <span className="tag">Async Strategy (.validarAsync)</span>
+              <span className="tag">Decorator (quando + comSanitizacao)</span>
+              <span className="tag">Factory Method (cpf-mask)</span>
+              <span className="tag">Memento (Snapshot)</span>
+            </div>
+
+            <form onSubmit={form.handleSubmit((dados) => setSucesso(dados))}>
+              {form.renderField('nomeCliente', {
+                type: 'text',
+                label: 'Nome do Titular',
+                placeholder: 'Ex.: Empresa Tech Ltda',
+              })}
+
+              {/* Renderizado pela FieldComponentFactory com o tipo customizado 'cpf-mask' */}
+              {form.renderField('cpf', {
+                type: 'cpf-mask',
+                label: 'CPF (Componente Visual Customizado Registrado na Factory)',
+              })}
+
+              <div className="field-group">
+                <label>Tipo de Cadastro</label>
+                <select {...form.register('tipoPessoa')}>
+                  <option value="PF">Pessoa Física (PF - Não exige CNPJ)</option>
+                  <option value="PJ">Pessoa Jurídica (PJ - Decorator exige CNPJ)</option>
+                </select>
+              </div>
+
+              {form.values.tipoPessoa === 'PJ' && (
+                <div className="field-group">
+                  <label>CNPJ (Validado pelo Decorator validatorDecorators.quando)</label>
+                  <input {...form.register('cnpj')} placeholder="Digite os 14 números do CNPJ" />
+                  {form.fields.cnpj.touched && form.errors.cnpj && <span className="erro">{form.errors.cnpj}</span>}
+                </div>
+              )}
+
+              {/* Renderizado pela FieldComponentFactory com o tipo customizado 'moeda-brl' */}
+              {form.renderField('valorDoacao', {
+                type: 'moeda-brl',
+                label: 'Valor do Pagamento (Componente Visual Customizado Moeda)',
+              })}
+
+              <div className="field-group">
+                <label>Cupom de Desconto (Validação Assíncrona — teste <code>DESCONTO10</code>)</label>
+                <input {...form.register('cupom')} placeholder="Digite DESCONTO10 ou um código inválido" />
+                {form.fields.cupom.validating && <span className="validating-msg">⏳ Consultando disponibilidade do cupom na API...</span>}
+                {!form.fields.cupom.validating && form.errors.cupom && <span className="erro">{form.errors.cupom}</span>}
+              </div>
+
+              <div className="btn-row">
+                <button type="submit" className="btn btn-primary" disabled={form.isSubmitting}>
+                  {form.isSubmitting ? 'Validando...' : 'Finalizar Pedido'}
+                </button>
+                <button type="button" className="btn btn-secondary" onClick={() => setCheckpoint(form.criarSnapshot())}>
+                  📸 Salvar Checkpoint (Memento)
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  disabled={!checkpoint}
+                  onClick={() => checkpoint && form.restaurarSnapshot(checkpoint)}
+                >
+                  ⏪ Restaurar Checkpoint {checkpoint ? `(${checkpoint.timestamp})` : ''}
+                </button>
+                <button type="button" className="btn btn-secondary" onClick={() => { form.reset(); setSucesso(null); }}>
+                  Limpar Tudo
+                </button>
+              </div>
+            </form>
+
+            {sucesso && (
+              <div className="success-box">
+                ✅ <strong>Checkout Validado com Regras Customizadas!</strong> Payload: <code>{JSON.stringify(sucesso)}</code>
+              </div>
+            )}
+          </div>
+
+          <div className="card">
+            <h2>Inspeção de Estado + Memento</h2>
+            <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginTop: 0 }}>
+              Observe o campo <code>validating: true</code> durante a consulta assíncrona do cupom:
+            </p>
+            <pre>{JSON.stringify({
+              isValid: form.isValid,
+              isDirty: form.isDirty,
+              checkpointSalvoEm: checkpoint ? checkpoint.timestamp : 'Nenhum',
+              fields: form.fields,
+            }, null, 2)}</pre>
+          </div>
+        </div>
+      );
+    }
+
+    function AppDemo() {
+      const [aba, setAba] = useState('padrao');
+      return (
+        <div className="container">
+          <header>
+            <h1>🚀 Mini-Projeto Consumidor — Biblioteca FormFlexReact</h1>
+            <p>
+              Aplicação de exemplo demonstrando como outro desenvolvedor importa, instancia e estende a biblioteca
+              <strong> flexform-react</strong> aplicando Strategy, Decorator, Chain of Responsibility, Observer, Memento, Builder, Factory Method, Adapter e Facade.
+            </p>
+            <div className="tabs">
+              <button className={`tab-btn ${aba === 'padrao' ? 'active' : ''}`} onClick={() => setAba('padrao')}>
+                1️⃣ Caso de Uso Padrão (Out-of-the-Box)
+              </button>
+              <button className={`tab-btn ${aba === 'estendido' ? 'active' : ''}`} onClick={() => setAba('estendido')}>
+                2️⃣ Caso com Extensão (CPF + Cupom Async + Decorator + Memento)
+              </button>
+            </div>
+          </header>
+          {aba === 'padrao' ? <AbaPadrao /> : <AbaEstendida />}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<AppDemo />);
+  </script>
+</body>
+</html>
+
