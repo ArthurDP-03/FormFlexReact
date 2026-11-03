@@ -1,0 +1,32 @@
+{
+  "name": "flexform-react",
+  "version": "1.0.0",
+  "description": "Biblioteca extensível e reativa para construção programática e validação de formulários em React, arquitetada com Design Patterns e Clean Code.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "react",
+    "forms",
+    "validation",
+    "design-patterns",
+    "clean-code",
+    "typescript",
+    "headless-ui"
+  ],
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "typescript": "^5.0.0"
+  }
+}
