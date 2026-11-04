@@ -6,19 +6,19 @@ Biblioteca reativa, tipada e extensível para **construção programática de fo
 
 ## 👥 Equipe (Integrantes)
 
-| Aluno | Matrícula / GitHub | Padrões Apresentados no Vídeo |
+| Aluno | GitHub | Padrões Apresentados no Vídeo |
 | :--- | :--- | :--- |
-| **Arthur Oliveira** *(preencher nome completo)* | [@ArthurDP-03](https://github.com/ArthurDP-03) | Strategy & Chain of Responsibility |
-| **Caio** *(preencher nome completo)* | [@caiobozzprocopilot](https://github.com/caiobozzprocopilot) | Observer (Pub/Sub) & Builder (Fluent Interface) |
-| **João Victor** *(preencher nome completo)* | [@Jvictoroak](https://github.com/Jvictoroak) | Adapter & Facade |
-| **Matheus** *(preencher nome completo)* | [@MatheusDBS](https://github.com/MatheusDBS) | Decorator & Memento / Factory Method |
+| **Arthur de Oliveira Carvalho** | [@ArthurDP-03](https://github.com/ArthurDP-03) | Strategy & Chain of Responsibility |
+| **Caio Eduardo Lamoglia** | [@caiobozzprocopilot](https://github.com/caiobozzprocopilot) | Observer (Pub/Sub) & Builder (Fluent Interface) |
+| **João Victor Saboya Ribeiro de Carvalho** [@Jvictoroak](https://github.com/Jvictoroak) | Adapter & Facade |
+| **Matheus De Bortoli Silva** | [@MatheusDBS](https://github.com/MatheusDBS) | Decorator & Memento / Factory Method |
 
 ---
 
 ## 🎥 Vídeo de Apresentação (YouTube)
 
 > 🔗 **Link para o vídeo de defesa arquitetural e demonstração prática (Não listado):**  
-> **[👉 Assistir Apresentação no YouTube (Inserir Link Aqui)](https://www.youtube.com/watch?v=SEU_LINK_AQUI)**
+> **[Adicionar o link quando estiver publicado](https://www.youtube.com/watch?v=SEU_LINK_AQUI)**
 
 ---
 
