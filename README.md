@@ -10,7 +10,7 @@ Biblioteca reativa, tipada e extensível para **construção programática de fo
 | :--- | :--- | :--- |
 | **Arthur de Oliveira Carvalho** | [@ArthurDP-03](https://github.com/ArthurDP-03) | Strategy & Chain of Responsibility |
 | **Caio Eduardo Lamoglia** | [@caiobozzprocopilot](https://github.com/caiobozzprocopilot) | Observer (Pub/Sub) & Builder (Fluent Interface) |
-| **João Victor Saboya Ribeiro de Carvalho** [@Jvictoroak](https://github.com/Jvictoroak) | Adapter & Facade |
+| **João Victor Saboya Ribeiro de Carvalho** | [@Jvictoroak](https://github.com/Jvictoroak) | Adapter & Facade |
 | **Matheus De Bortoli Silva** | [@MatheusDBS](https://github.com/MatheusDBS) | Decorator & Memento / Factory Method |
 
 ---
