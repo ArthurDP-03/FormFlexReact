@@ -17,8 +17,8 @@ Biblioteca reativa, tipada e extensível para **construção programática de fo
 
 ## 🎥 Vídeo de Apresentação (YouTube)
 
-> 🔗 **Link para o vídeo de defesa arquitetural e demonstração prática (Não listado):**  
-> **[Adicionar o link quando estiver publicado](https://www.youtube.com/watch?v=SEU_LINK_AQUI)**
+> 🔗 **Link para o vídeo de defesa arquitetural e demonstração prática (Não listado):** 
+> **[https://www.youtube.com/watch?v=y2RjK6VuAFY](https://www.youtube.com/watch?v=y2RjK6VuAFY)**
 
 ---
 
